@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "generate": "prisma generate",
+    "deploy": "prisma deploy"
+  }
+}
