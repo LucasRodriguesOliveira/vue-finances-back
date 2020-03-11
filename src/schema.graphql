@@ -1,11 +1,51 @@
+scalar Date
+
 type Query {
-  user: User
+  user: User,
+  accounts: [Account!]!
+  categories(operation: Operation): [Category!]!
+  records(
+    """
+      Month and Year, format "MM-YYYY" e.g.: 03-2020
+    """
+    month: String
+    type: Operation,
+    accountIds: [ ID! ],
+    categoriesIds: [ ID! ]
+  ): [ Record! ]!
+  """
+    Year, Month and Day, format "YYYY-MM-DD" e.g.: 2020-03-11
+  """
+  totalBalance(date: Date!): Float!
 }
 
 type Mutation {
   login(email: String!, password: String!): AuthPayload
   register(email: String!, password: String!, name: String!): AuthPayload
   createAccount(description: String!): Account!
+  createCategory(description: String!, operation: Operation!): Category!
+  createRecord(
+    accountId: ID!
+    categoryId: ID!
+    amount: Float!
+    type: Operation!
+    date: Date!
+    description: String!
+    tags: String
+    note: String
+  ): Record!
+}
+
+enum Operation {
+  DEBIT
+  CREDIT
+}
+
+type Category {
+  id: ID!
+  user: User
+  description: String!
+  operation: Operation!
 }
 
 type AuthPayload {
@@ -23,4 +63,17 @@ type Account {
   id: ID!
   user: User
   description: String!
+}
+
+type Record {
+  id: ID!
+  user: User!
+  account: Account!
+  category: Category!
+  amount: Float!
+  type: Operation!
+  date: Date!
+  description: String!
+  tags: String
+  note: String
 }
